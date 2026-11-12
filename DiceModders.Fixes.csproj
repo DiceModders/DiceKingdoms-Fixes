@@ -25,6 +25,15 @@
     <Reference Include="DiceModders.ModCore" HintPath="$(MSBuildThisFileDirectory)libs/DiceModders.ModCore.dll" Private="false" />
   </ItemGroup>
 
+  <!-- reproducible: the same code gives the same DLL on every computer (ModCore compares DLL fingerprints in the lobby) -->
+  <PropertyGroup>
+    <Deterministic>true</Deterministic>
+    <PathMap>$(MSBuildProjectDirectory)\=/_/</PathMap>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <EnableSourceLink>false</EnableSourceLink>
+    <EmbedUntrackedSources>false</EmbedUntrackedSources>
+  </PropertyGroup>
+
 </Project>
 
 
