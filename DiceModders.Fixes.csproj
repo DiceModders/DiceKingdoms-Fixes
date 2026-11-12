@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <AssemblyName>DiceModders.Fixes</AssemblyName>
+    <RootNamespace>DiceModders.Fixes</RootNamespace>
+    <Description>Fixes for bugs of Dice Kingdoms itself: rejoining after the host left, joining with a wrong PC clock.</Description>
+    <Version>1.0.0</Version>
+    <Authors>DiceModders</Authors>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <RestoreAdditionalProjectSources>https://api.nuget.org/v3/index.json;https://nuget.bepinex.dev/v3/index.json</RestoreAdditionalProjectSources>
+  </PropertyGroup>
+
+  <!-- Debug (scripts\build.ps1 -Dev) defines DEVLOG: extra diagnostics that normal releases do not contain -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <DefineConstants>$(DefineConstants);DEVLOG</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.*" IncludeAssets="compile" />
+    <!-- interop: junction to <game>\BepInEx\interop; libs: the installed libraries (both made by scripts\build.ps1) -->
+    <Reference Include="$(MSBuildThisFileDirectory)interop/*.dll" Private="false" />
+    <Reference Include="DiceModders.ModCore" HintPath="$(MSBuildThisFileDirectory)libs/DiceModders.ModCore.dll" Private="false" />
+  </ItemGroup>
+
+</Project>
+
+
