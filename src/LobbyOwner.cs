@@ -1,5 +1,4 @@
 using System;
-using DiceModders.ModCore.Tools;
 using Steamworks;
 using NetworkingManager = MLAPI.NetworkingManager;
 using SteamworksTransport = Utility.Steamworks.SteamworksTransport;
@@ -18,17 +17,21 @@ using Core = DiceModders.ModCore.ModCore;
 /// match looks dead and players who dropped out cannot get back in.
 ///
 /// The fix runs on the lobby owner: when it is connected as a client to another player's game, it hands the Steam lobby to that player (Steam's own
-/// SetLobbyOwner). Checked when this computer connects to a host (MLAPI's client-connected callback) and when the lobby changes (members, owner).
+/// SetLobbyOwner). Checked when the match starts or is joined again on this computer (it is connected to the host by then) and when the lobby
+/// changes (members, owner).
+///
+/// Do not hook NetworkingManager.InvokeOnClientConnectedCallback for this: the method starts with a compare and a short conditional jump, and the
+/// detour library moves that jump to a wrong address. The game leaves the callback empty, so the jump is taken on every join and the game dies
+/// without a message.
 /// </summary>
 internal static class LobbyOwner
 {
-    internal static void Install(Patcher patcher)
+    internal static void Install()
     {
-        patcher.Patch(typeof(NetworkingManager), nameof(NetworkingManager.InvokeOnClientConnectedCallback), typeof(LobbyOwner), postfix: nameof(ConnectedPostfix));
+        Core.Match.Started += () => Check("match started");
+        Core.Match.Rejoined += () => Check("match joined again");
         Core.Lobby.Changed += () => Check("lobby changed");
     }
-
-    internal static void ConnectedPostfix() => Check("connected to the host");
 
     internal static void Check(string why)
     {

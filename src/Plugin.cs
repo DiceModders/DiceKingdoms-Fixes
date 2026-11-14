@@ -26,7 +26,7 @@ public sealed class Plugin : BasePlugin
     {
         L = Log;
         var patcher = new Patcher(Guid, Log);
-        LobbyOwner.Install(patcher);
+        LobbyOwner.Install();
         ClockFix.Install(patcher);
         patcher.Summary();
         Core.Mods.Switch(Config, affectsSimulation: false, description: "Turns every fix of this mod on or off.")
